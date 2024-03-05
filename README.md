@@ -30,8 +30,8 @@ To build directly without Python, run the following from the Intel OneAPI comman
 prompt:
 
 ```bash
-git clone <repository-url>
-cd <project-directory>
+git clone https://github.com/caleb399/GMRESpy.git
+cd GMRESpy
 mkdir build & cd build
 CMake -GNinja ..
 ninja all
@@ -39,15 +39,15 @@ ninja all
 This will build the Python module dependency `gmres_dpcpp.pyd` 
 and an executable `dpcpp_gmres.exe` containing an example problem.
 ### Python setuptools
-To install the Python module, it is recommended to use a virtual environment:
+To install the Python module, it is recommended to use a virtual environment. First open the OneAPI command prompt, and enter:
 ```bash
 python -m venv GMRESpy
 .\GMRESpy\Scripts\activate.bat
 ```
 Then, run the following:
 ```bash
-git clone <repository-url>
-cd <project-directory>\GMRESpy
+git clone https://github.com/caleb399/GMRESpy.git
+cd GMRESPy\GMRESpy
 pip install .
 cd ..
 ```
