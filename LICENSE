@@ -19,3 +19,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## External Dependencies and Licenses
+
+This project uses the following libraries (without modification):
+
+- **Eigen**: [Mozilla Public License 2.0 (MPL2)](https://www.mozilla.org/en-US/MPL/2.0/)
+  - Eigen is a high-level C++ library for linear algebra. It is included in this project as a submodule. For more information, visit the [Eigen project page](https://gitlab.com/libeigen/eigen).
+  
+- **Pybind11**: [BSD-style License](https://github.com/pybind/pybind11/blob/master/LICENSE)
+  - Pybind11 is a lightweight header-only library that exposes C++ types in Python and vice versa. It is included here as a submodule. Detailed information and documentation can be found on the [Pybind11 GitHub repository](https://github.com/pybind/pybind11).
