@@ -1,0 +1,80 @@
+cmake_minimum_required(VERSION 3.15)
+
+# Compiler settings
+set(CMAKE_CXX_COMPILER "dpcpp-cl")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsycl")
+set(CMAKE_BUILD_TYPE "Release")
+
+project(GMRESDPCPP VERSION 1.0 LANGUAGES CXX)
+
+# HDF5 install dir (required for building gmres_examples target)
+set(HDF5_ROOT_DIR C:/Program\ Files/HDF_Group/HDF5/1.14.3)
+
+# Include directories / subdirectories
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ext/eigen_3-4-0)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/dpcpp)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ext/pybind11)
+
+# Common compile options
+set(COMMON_OPTIONS
+    "$<$<CONFIG:Release>:-O2>"
+    "$<$<COMPILE_LANGUAGE:CXX>:/fno-sycl-early-optimizations>"
+    "$<$<COMPILE_LANGUAGE:CXX>:/fno-sycl-dead-args-optimization>"
+    "$<$<COMPILE_LANGUAGE:CXX>:/MD>"
+    "$<$<COMPILE_LANGUAGE:CXX>:/EHsc>"
+    "$<$<COMPILE_LANGUAGE:CXX>:/W3>"
+    "$<$<COMPILE_LANGUAGE:CXX>:/nologo>"
+    "$<$<COMPILE_LANGUAGE:CXX>:/std:c++17>"
+    "$<$<COMPILE_LANGUAGE:CXX>:/Zc:__cplusplus>"
+)
+
+# Module source files
+set(MOD_SOURCE_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dpcpp/gmres_bindings.dp.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dpcpp/gmres_buf.dp.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dpcpp/gmres_device.dp.cpp
+)
+
+# Add pybind11 module and dependencies
+pybind11_add_module(gmres MODULE ${MOD_SOURCE_FILES})
+target_include_directories(gmres PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/ext/pybind11/include/pybind11)
+target_compile_options(gmres PRIVATE ${COMMON_OPTIONS})
+target_compile_definitions(gmres PRIVATE
+    "$<$<CONFIG:Release>:NDEBUG>"
+    "$<$<COMPILE_LANGUAGE:CXX>:_UNICODE>"
+    "$<$<COMPILE_LANGUAGE:CXX>:UNICODE>"
+)
+target_link_libraries(gmres PRIVATE sycl7)
+target_include_directories(gmres SYSTEM PRIVATE $ENV{ONEAPI_ROOT}/compiler/latest/include)
+target_include_directories(gmres SYSTEM PRIVATE $ENV{ONEAPI_ROOT}/compiler/latest/include/sycl)
+set_target_properties(gmres PROPERTIES LIBRARY_OUTPUT_NAME dpcpp_gmres)
+# Executable source files
+set(EXEC_SOURCE_FILES
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/dpcpp/gmres_buf.dp.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/dpcpp/gmres_device.dp.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/examples/main.dp.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/hdf5/hdf5_util.cpp
+)
+
+# Add executable
+add_executable(gmres_examples ${EXEC_SOURCE_FILES})
+target_include_directories(gmres_examples PRIVATE ${HDF5_ROOT_DIR}/include)
+target_compile_options(gmres_examples PRIVATE ${COMMON_OPTIONS})
+target_compile_definitions(gmres_examples PRIVATE
+   "$<$<CONFIG:Release>:NDEBUG>"
+   "$<$<COMPILE_LANGUAGE:CXX>:_UNICODE>"
+   "$<$<COMPILE_LANGUAGE:CXX>:UNICODE>"
+)
+
+# HDF5 Libraries
+set(HDF5_LIBS
+    "shlwapi.lib"
+    "${HDF5_ROOT_DIR}/lib/libhdf5_cpp.lib"
+    "${HDF5_ROOT_DIR}/lib/libhdf5.lib"
+    "${HDF5_ROOT_DIR}/lib/libzlib.lib"
+    "${HDF5_ROOT_DIR}/lib/libszaec.lib"
+    "${HDF5_ROOT_DIR}/lib/libaec.lib"
+)
+target_link_libraries(gmres_examples PRIVATE ${HDF5_LIBS} sycl7)
+target_include_directories(gmres_examples SYSTEM PRIVATE $ENV{ONEAPI_ROOT}/compiler/latest/include)
+target_include_directories(gmres_examples SYSTEM PRIVATE $ENV{ONEAPI_ROOT}/compiler/latest/include/sycl)
