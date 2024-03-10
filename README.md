@@ -55,7 +55,7 @@ Before using GMRESpy, be sure to delete the original `GMRESpy` directory or navi
 This ensures that Python will correctly load the GMRESpy package from installed site-packages directory.
 
 ## Example usage
-See `gmres.py` for example usage.
+See `src\examples\gmres_benchmarks.py` for example usage.
 
 ## Development Status and To-Do List
 
