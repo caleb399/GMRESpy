@@ -11,7 +11,7 @@ project(GMRESDPCPP VERSION 1.0 LANGUAGES CXX)
 set(HDF5_ROOT_DIR C:/Program\ Files/HDF_Group/HDF5/1.14.3)
 
 # Include directories / subdirectories
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ext/eigen_3-4-0)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ext/eigen)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/dpcpp)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ext/pybind11)
 
