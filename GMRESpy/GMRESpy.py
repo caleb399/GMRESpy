@@ -15,16 +15,6 @@ class SparseSolverParams(BaseModel):
 	device: str = Field(default = "DEFAULT")
 	show_progress: bool = Field(default = False)
 
-	@field_validator('A')
-	def check_csr_matrix(cls, v):
-		if not isinstance(v, csr_matrix):
-			raise ValueError('A must be a scipy.sparse.csr_matrix')
-		if v.data.dtype != np.float32:
-			raise ValueError('A.data must be of dtype float32')
-		if v.indices.dtype != np.int32 or v.indptr.dtype != np.int32:
-			raise ValueError('A.indices and A.indptr must be of dtype int32')
-		return v
-
 	@field_validator('x0', 'b')
 	def check_float32(cls, v):
 		if v.dtype != np.float32:
