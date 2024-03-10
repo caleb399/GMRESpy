@@ -25,13 +25,10 @@ class NinjaBuild(SetuptoolsBuildExt):
 	def build_extension(self, ext):
 		cwd = os.getcwd()
 		build_temp = os.path.abspath(self.build_temp)
-		# cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + build_temp,
-		#              '-DPYTHON_EXECUTABLE=' + sys.executable,
-		#              '-G Ninja']
 		cmake_args = ['-GNinja']
 		os.makedirs(build_temp, exist_ok = True)
 		subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd = build_temp)
-		subprocess.check_call(['ninja', 'gmres'], cwd = build_temp)
+		subprocess.check_call(['ninja', 'gmres_pybind'], cwd = build_temp)
 
 		pyd_files = glob.glob(os.path.join(build_temp, 'dpcpp_gmres*.pyd'))
 		if len(pyd_files) == 0:

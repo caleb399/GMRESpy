@@ -28,7 +28,7 @@ if sycl_dll_found and os.path.exists(sycl7_dll_path):
 		sys.exit(-1)
 
 try:
-	from .dpcpp_gmres import gmres
+	from .dpcpp_gmres import gmres_pybind
 except ImportError:
 	print('Could not load gmres from shared library. Possible causes include:\n'
 		  '1. You are running Python from the same directory where you originally installed GMRESpy. '

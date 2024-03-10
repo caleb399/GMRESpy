@@ -33,7 +33,7 @@ namespace py = pybind11;
  */
 PYBIND11_MODULE(dpcpp_gmres, m) {
     m.def(
-        "gmres",
+        "gmres_pybind",
         [](py::array_t<float> values,
            py::array_t<int32_t> col_indices,
            py::array_t<int32_t> row_offsets,

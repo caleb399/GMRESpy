@@ -36,18 +36,18 @@ set(MOD_SOURCE_FILES
 )
 
 # Add pybind11 module and dependencies
-pybind11_add_module(gmres MODULE ${MOD_SOURCE_FILES})
-target_include_directories(gmres PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/ext/pybind11/include/pybind11)
-target_compile_options(gmres PRIVATE ${COMMON_OPTIONS})
-target_compile_definitions(gmres PRIVATE
+pybind11_add_module(gmres_pybind MODULE ${MOD_SOURCE_FILES})
+target_include_directories(gmres_pybind PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/ext/pybind11/include/pybind11)
+target_compile_options(gmres_pybind PRIVATE ${COMMON_OPTIONS})
+target_compile_definitions(gmres_pybind PRIVATE
     "$<$<CONFIG:Release>:NDEBUG>"
     "$<$<COMPILE_LANGUAGE:CXX>:_UNICODE>"
     "$<$<COMPILE_LANGUAGE:CXX>:UNICODE>"
 )
-target_link_libraries(gmres PRIVATE sycl7)
-target_include_directories(gmres SYSTEM PRIVATE $ENV{ONEAPI_ROOT}/compiler/latest/include)
-target_include_directories(gmres SYSTEM PRIVATE $ENV{ONEAPI_ROOT}/compiler/latest/include/sycl)
-set_target_properties(gmres PROPERTIES LIBRARY_OUTPUT_NAME dpcpp_gmres)
+target_link_libraries(gmres_pybind PRIVATE sycl7)
+target_include_directories(gmres_pybind SYSTEM PRIVATE $ENV{ONEAPI_ROOT}/compiler/latest/include)
+target_include_directories(gmres_pybind SYSTEM PRIVATE $ENV{ONEAPI_ROOT}/compiler/latest/include/sycl)
+set_target_properties(gmres_pybind PROPERTIES LIBRARY_OUTPUT_NAME dpcpp_gmres)
 # Executable source files
 set(EXEC_SOURCE_FILES
    ${CMAKE_CURRENT_SOURCE_DIR}/src/dpcpp/gmres_buf.dp.cpp

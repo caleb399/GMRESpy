@@ -5,14 +5,14 @@ import h5py
 from scipy.sparse import csr_matrix
 import scipy.sparse.linalg
 
-os.add_dll_directory(r'C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\bin')
+from GMRESpy.solvers import gmres
 
-from .lib.dpcpp_gmres import dpcpp_gmres
 
 def main():
 	# Load system
-	L = read_sparse_matrix_hdf5('step.h5')
-	with h5py.File('step.h5', 'r') as f:
+	filename = r'..\..\test_data\step.h5'
+	L = read_sparse_matrix_hdf5(filename)
+	with h5py.File(filename, 'r') as f:
 		b = f['b'][:]
 
 	# GMRES parameters
@@ -21,7 +21,6 @@ def main():
 	max_iter = 1000
 	rtol = 1e-3
 	x0 = np.zeros(n, dtype = np.float32)
-	rerr = -1
 
 	x0_copy = x0.copy()  # Make sure x0 isn't changed after each call to GMRES
 
@@ -35,26 +34,22 @@ def main():
 		print(f'\tTime: {end - start_} seconds.\n')
 
 	# DPC++ using CPU
-	print('Running GMRES benchmark using dpcpp_gmres.gmres with CPU')
+	print('\nRunning GMRES benchmark using GMRESpy.solvers.gmres with CPU\n')
 	start = timeit.default_timer()
-	x, rerr, status = dpcpp_gmres.gmres(L.data.astype(np.float32), L.indices.astype(np.int32),
-										L.indptr.astype(np.int32),
-										x0, b, rerr, n, show_progress = True, rtol = rtol, restart = restart, device = "CPU")
+	x, rerr, status = gmres(L, x0, b, n, show_progress = True, rtol = rtol, restart = restart, device = "CPU")
 	print_benchmark(x, rerr, start)
 
 	# DPC++ using GPU
-	print('Running GMRES benchmark using dpcpp_gmres.gmres with GPU')
+	print('Running GMRES benchmark using GMRESpy.solvers.gmres with GPU\n')
 	start = timeit.default_timer()
-	x, rerr, status = dpcpp_gmres.gmres(L.data.astype(np.float32), L.indices.astype(np.int32),
-										L.indptr.astype(np.int32),
-										x0, b, rerr, n, show_progress = True, rtol = rtol, restart = restart, device = "GPU")
+	x, rerr, status = gmres(L, x0, b, n, show_progress = True, rtol = rtol, restart = restart, device = "GPU")
 	print_benchmark(x, rerr, start)
 
-	# scipy.sparse.linalg using openMP (if available)
-	print('Running GMRES benchmark using scipy.sparse.linalg')
+	# scipy.sparse.linalg
+	print('Running GMRES benchmark using scipy.sparse.linalg\n')
 	start = timeit.default_timer()
-	x, info= scipy.sparse.linalg.gmres(L, b, x0 = x0, rtol = rtol, restart = restart, maxiter = max_iter)
-	print_benchmark(x, -1, start)
+	x, info = scipy.sparse.linalg.gmres(L, b, x0 = x0, rtol = rtol, restart = restart, maxiter = max_iter)
+	print_benchmark(x, None, start)
 
 
 def read_sparse_matrix_hdf5(filename, dataset_name = 'sparse_matrix'):
