@@ -57,6 +57,23 @@ This ensures that Python will correctly load the GMRESpy package from installed 
 ## Example usage
 See `src\examples\gmres_benchmarks.py` for example usage.
 
+## Sample Benchmarks
+- Solution of a 524288 x 524288 sparse linear system (test_data\test1.h5)
+- Number of nonzeros: 3667968
+- GMRES parameters: restart = 80, rtol = 1e-5
+- For the scipy benchmarks, OMP_NUM_THREADS was set to either 4 or 8, depending on which one gave the fastest time.
+
+| Library/Environment | Hardware                | Time (seconds) |
+|---------------------|-------------------------|----------------|
+| GMRESpy             | Integrated Arc Graphics | 151            |
+| SciPy + openBLAS    | Intel 10900KF           | 136            |
+| SciPy + Intel MKL   | Core Ultra 7 155H       | 99             |
+| SciPy + Intel MKL   | Intel 10900KF           | 80             |
+| GMRESpy             | Core Ultra 7 155H       | 82             |
+| GMRESpy             | Intel 10900KF           | 60             |
+| GMRESpy             | Intel Arc 770           | 37             |
+
+
 ## Development Status and To-Do List
 
 Note: This project is in an early stage of development. Features and documentation may be incomplete or subject to change.

@@ -10,7 +10,7 @@ from GMRESpy.solvers import gmres
 
 def main():
 	# Load system
-	filename = r'..\..\test_data\step.h5'
+	filename = os.path.join('..', '..', 'test_data', 'test1.h5')
 	L = read_sparse_matrix_hdf5(filename)
 	with h5py.File(filename, 'r') as f:
 		b = f['b'][:]
@@ -19,7 +19,7 @@ def main():
 	n = L.shape[0]
 	restart = 80
 	max_iter = 1000
-	rtol = 1e-3
+	rtol = 1e-5
 	x0 = np.zeros(n, dtype = np.float32)
 
 	x0_copy = x0.copy()  # Make sure x0 isn't changed after each call to GMRES
