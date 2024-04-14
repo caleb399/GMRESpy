@@ -11,6 +11,20 @@
 #include <Eigen/Dense> // For Hessenberg solver
 #include "csr.dp.hpp" // For `CSRMatrix<T>` struct definition
 
+// Tolerance for breakdown check
+template<typename T>
+struct BreakdownTolerance;
+
+template<>
+struct BreakdownTolerance<float> {
+    static constexpr float tol = 1e-7f;
+};
+
+template<>
+struct BreakdownTolerance<double> {
+    static constexpr double tol = 1e-12;
+};
+
 /**
  * Solves a linear system Ax = b where A is an upper Hessenberg matrix.
  *
